@@ -1,0 +1,85 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <style>
+            body {
+              margin: 0;
+              overflow: hidden;
+            }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/101/three.min.js"></script>
+    
+    <script>
+      // ページの読み込みを待つ
+      window.addEventListener('load', init);
+      function init() {
+       
+        // サイズを指定
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+       
+        // レンダラーを作成
+        const renderer = new THREE.WebGLRenderer({
+          canvas: document.querySelector('#myCanvas'),
+          antialias: true,
+          devicePixelRatio: window.devicePixelRatio
+        });
+        renderer.setClearColor("#111111");
+        renderer.setSize(width, height);
+       
+        // シーンを作成
+        const scene = new THREE.Scene();
+       
+        // フォグを設定
+        scene.fog = new THREE.Fog(0x000000, 300, 2000);
+       
+        // カメラを作成
+        const camera = new THREE.PerspectiveCamera(45, width / height);
+        camera.position.set(0, 0, +600);
+        
+        // グループを作成
+        const group = new THREE.Group();
+        scene.add(group);
+
+        const geometry = new THREE.BoxBufferGeometry(2, 2, 2);
+
+        const material = new THREE.MeshStandardMaterial({wireframe:false});
+
+    
+        for (let i = 0; i < 500; i++) {
+
+          const mesh = new THREE.Mesh(geometry, material);
+          mesh.position.x = (Math.random() - 0.5) * 2000;
+          mesh.position.y = (Math.random() - 0.5) * 2000;
+          mesh.position.z = (Math.random() - 0.5) * 2000;
+
+          mesh.rotation.x = Math.random() * 2 * Math.PI;
+          mesh.rotation.y = Math.random() * 2 * Math.PI;
+          mesh.rotation.z = Math.random() * 2 * Math.PI;
+
+          // グループに格納する
+          group.add(mesh);
+        }
+        
+        // 光源
+        scene.add(new THREE.DirectionalLight(0xffffff, 100)); // 平行光源
+        scene.add(new THREE.AmbientLight(0xffff00)); // 環境光源
+       
+        // 毎フレーム時に実行されるループイベントです 
+        tick();
+        function tick() {
+          // グループを回す
+          group.rotateY(0.0005);
+          group.rotateX(0.00075);
+          renderer.render(scene, camera); // レンダリング
+          requestAnimationFrame(tick);
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <canvas id="myCanvas"></canvas>
+  </body>
+</html>
