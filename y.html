@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/101/three.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+    </style>
+    <script>
+      // ページの読み込みを待つ
+      window.addEventListener('load', init);
+      function init() {
+        // サイズを指定
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        // レンダラーを作成
+        const renderer = new THREE.WebGLRenderer({
+          canvas: document.querySelector('#myCanvas')
+        });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(width, height);
+
+        // シーンを作成
+        const scene = new THREE.Scene();
+
+        // カメラを作成
+        const camera = new THREE.PerspectiveCamera(45, width / height);
+        camera.updateProjectionMatrix();
+        camera.position.set(20, 20, 20);
+        camera.lookAt(new THREE.Vector3(0, 0, 0));
+
+        // 床を作成
+        /*const meshFloor = new THREE.Mesh(
+          new THREE.BoxGeometry(30, 0.1, 30),
+          new THREE.MeshStandardMaterial({ color: 0x666666, roughness: 0.0 })
+        );
+        scene.add(meshFloor);
+        */
+        
+        // オブジェクトを作成
+        const sphere = new THREE.Mesh(
+          new THREE.SphereGeometry(5,20,20),
+          new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.0,wireframe:true}
+          )
+        );
+        sphere.position.set(0, 0, 0);
+        scene.add(sphere);
+
+        const Box = new THREE.Mesh(
+          new THREE.BoxGeometry(3,3,3),
+          new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.0}
+          )
+        );
+        Box.position.set(0, 0, 0);
+        scene.add(Box);
+
+        // 平行光源を作成
+        // new THREE.DirectionalLight(色, 光の強さ)
+        const light = new THREE.DirectionalLight(0xffffff, 2);
+        scene.add(light);
+
+        // 照明を可視化するヘルパー
+        /*const lightHelper = new THREE.DirectionalLightHelper(light);
+        scene.add(lightHelper);*/
+
+        tick();
+        // 毎フレーム時に実行されるループイベントです
+        function tick() {
+          // レンダリング
+          renderer.render(scene, camera);
+          document.onmousemove = function(){
+            sphere.rotation.x += 0.02;
+            sphere.rotation.y += 0.02;
+
+            Box.rotation.x -= 0.02;
+            Box.rotation.y -= 0.02;
+          }
+          // 照明の位置を更新
+          const t = Date.now() / 1000;
+          const r = 10.0;
+          const lx = r * Math.cos(t);
+          const lz = r * Math.sin(t);
+          const ly = 4.0 + 5.0 * Math.sin(t / 3.0);
+          
+          light.position.set(lx, ly, lz);
+          /*lightHelper.update();
+*/
+          sphere.rotation.x += 0.005;
+          sphere.rotation.y += 0.005;
+          Box.rotation.x -= 0.005;
+          Box.rotation.y -= 0.005;
+          
+          requestAnimationFrame(tick);
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <canvas id="myCanvas"></canvas>
+  </body>
+</html>
