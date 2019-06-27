@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Zdog Tutorial</title>
+  <script src="https://unpkg.com/zdog@1/dist/zdog.dist.min.js"></script>
+</head>
+<body>
+  <canvas width="1280px" height="720px" class="zdog-canvas"></canvas>
+  <script>
+    // ここにコードを記述
+    const illo = new Zdog.Illustration({
+      element: '.zdog-canvas',
+      dragRotate: true,
+    })
+
+    let rect = new Zdog.Rect({
+    addTo: illo,
+    width: 150,
+    height: 150,
+    stroke: 30,
+    color: '#FF1133',
+});
+
+    let partyHat = new Zdog.Cone({
+    addTo: illo,
+    diameter: 100,
+    length: 300,
+    stroke: 30,
+    color: '#FF1133',
+    backface: '#FF1133',
+});
+
+    const animate = () => {
+      illo.rotate.x += 0.002
+      illo.rotate.y += 0.002            // 図形を回転
+      illo.updateRenderGraph()          // 回転後の図形を描画
+
+      requestAnimationFrame( animate )  // 再度呼び出し
+    }
+    animate()
+  </script>
+</body>
+</html>
